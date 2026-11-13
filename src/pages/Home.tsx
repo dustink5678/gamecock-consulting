@@ -7,12 +7,10 @@ import {
 } from 'framer-motion'
 import { useRef } from 'react'
 import type { MouseEvent } from 'react'
-import Counter from '../components/Counter'
 import Footer from '../components/Footer'
 import LogoMark from '../components/LogoMark'
 import PageTransition from '../components/PageTransition'
 import { logos } from '../data/logos'
-import { mbbThisYear } from '../data/placements'
 import Reveal from '../components/Reveal'
 import SplitText from '../components/SplitText'
 import { easeOut } from '../lib/motion'
@@ -31,9 +29,10 @@ export default function Home() {
 function Hero() {
   const ref = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '35%'])
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.92])
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '12%'])
+  // Hold solid until the hero is mostly scrolled past, then fade quickly.
+  const opacity = useTransform(scrollYProgress, [0, 0.55, 0.92], [1, 1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.55, 1], [1, 1, 0.97])
 
   const mx = useMotionValue(0.5)
   const my = useMotionValue(0.3)
@@ -79,12 +78,12 @@ function Hero() {
 
       <motion.div
         style={{ y, opacity, scale }}
-        className="relative mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-end px-6 pb-10 pt-28 md:px-10 md:pb-12"
+        className="relative mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-center px-6 pb-8 pt-24 md:px-10 md:pb-10"
       >
-        <div className="grid flex-1 items-center gap-6 md:grid-cols-12">
+        <div className="grid items-center gap-6 md:grid-cols-12 md:gap-10">
           <div className="md:col-span-7">
             <motion.p
-              className="label mb-8 flex items-center gap-3 text-paper/60"
+              className="label mb-6 flex items-center gap-3 text-paper/60"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1, delay: 0.7, ease: easeOut }}
@@ -101,7 +100,7 @@ function Hero() {
               ))}
             </h1>
             <motion.p
-              className="mt-8 max-w-lg text-lg leading-relaxed text-paper/70"
+              className="mt-6 max-w-lg text-lg leading-relaxed text-paper/70"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 1.4, ease: easeOut }}
@@ -142,28 +141,28 @@ function ProofTiles() {
       to: '/case-competitions',
       label: 'Case competitions',
       stat: (
-        <span className="font-serif text-5xl leading-none">
-          <Counter value={2} suffix="×" /> <span className="italic text-garnet-bright">1st place</span>
+        <span className="font-serif text-4xl leading-[1.05]">
+          Consistent <span className="italic text-garnet-bright">international wins</span>
         </span>
       ),
-      body: 'Wins in Norway and Ireland — competing from Hong Kong to Sydney.',
+      body: 'First-place finishes in Norway and Ireland — competing from Hong Kong to Sydney.',
     },
     {
       to: '/member-development',
       label: 'Placements',
       stat: (
-        <span className="flex items-center gap-5">
-          <span className="font-serif text-5xl leading-none">
-            <Counter value={mbbThisYear} />
+        <span className="flex flex-col gap-4">
+          <span className="font-serif text-4xl leading-[1.05]">
+            Continuous <span className="italic text-garnet-bright">MBB placements</span>
           </span>
-          <span className="flex items-center gap-4 [--logo-scale:0.5]">
+          <span className="flex items-center gap-5 [--logo-scale:0.5]">
             <LogoMark logo={logos.mckinsey} />
             <LogoMark logo={logos.bain} />
             <LogoMark logo={logos.bcg} />
           </span>
         </span>
       ),
-      body: 'Members placed at McKinsey, Bain & BCG this year alone.',
+      body: 'Members land at McKinsey, Bain & BCG year after year.',
     },
   ]
 
@@ -179,7 +178,7 @@ function ProofTiles() {
           <TransitionLink
             to={t.to}
             label={t.label}
-            className="group relative flex flex-col gap-4 overflow-hidden border-b border-white/10 py-6 md:py-7"
+            className="group relative flex flex-col gap-3 overflow-hidden border-b border-white/10 py-5 md:py-5"
           >
             <span className="absolute inset-0 origin-left scale-x-0 bg-white/[0.04] transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-x-100" />
             <span className="absolute bottom-[-1px] left-0 h-px w-full origin-left scale-x-0 bg-garnet-bright transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-x-100" />
@@ -224,7 +223,7 @@ function Pillars() {
   ]
 
   return (
-    <section id="pillars" className="bg-paper py-32 md:py-44">
+    <section id="pillars" className="bg-paper py-24 md:py-32">
       <div className="mx-auto max-w-[1600px] px-6 md:px-10">
         <div className="grid gap-10 md:grid-cols-12">
           <p className="label text-stone md:col-span-3">What we do</p>

@@ -62,7 +62,7 @@ function GlobeTour() {
   const c = step > 0 ? international[step - 1] : null
 
   return (
-    <section ref={ref} className="relative bg-ink text-paper" style={{ height: `${n * 90 + 40}vh` }}>
+    <section ref={ref} className="relative bg-ink text-paper" style={{ height: `${n * 55 + 20}vh` }}>
       <div className="grain sticky top-0 flex h-[100svh] flex-col overflow-hidden">
         <div className="relative mx-auto grid w-full max-w-[1600px] flex-1 grid-rows-[auto_1fr] items-center gap-4 px-6 pb-6 pt-24 md:grid-cols-12 md:grid-rows-1 md:gap-10 md:px-10 md:pt-28">
           <div className="relative order-2 md:order-1 md:col-span-8">
