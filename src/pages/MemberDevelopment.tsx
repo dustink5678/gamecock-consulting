@@ -18,10 +18,10 @@ export default function MemberDevelopment() {
     <PageTransition>
       <Hero />
       <Stats />
-      <Featured />
-      <Directory />
       <Development />
       <Testimonial />
+      <Featured />
+      <Directory />
       <Footer />
     </PageTransition>
   )

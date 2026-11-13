@@ -1,12 +1,17 @@
-import { AnimatePresence, motion, useMotionValue, useSpring } from 'framer-motion'
-import { useState } from 'react'
-import type { MouseEvent } from 'react'
+import {
+  motion,
+  useScroll,
+  useTransform,
+} from 'framer-motion'
+import type { MotionValue } from 'framer-motion'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Footer from '../components/Footer'
 import Motif from '../components/Motif'
 import PageTransition from '../components/PageTransition'
 import Reveal from '../components/Reveal'
 import SplitText from '../components/SplitText'
 import { engagements } from '../data/engagements'
+import type { Engagement } from '../data/engagements'
 import { easeOut } from '../lib/motion'
 import { TransitionLink } from '../lib/transition'
 
@@ -41,194 +46,195 @@ export default function Engagements() {
         </div>
       </section>
 
-      <PartnerSection />
-      <EngagementList />
+      <Process />
+      <EngagementStack />
       <Footer />
     </PageTransition>
   )
 }
 
-function EngagementList() {
-  const [active, setActive] = useState<number | null>(null)
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
-  const sx = useSpring(x, { stiffness: 150, damping: 20, mass: 0.5 })
-  const sy = useSpring(y, { stiffness: 150, damping: 20, mass: 0.5 })
-
-  const [flip, setFlip] = useState(false)
-
-  const onMove = (e: MouseEvent) => {
-    x.set(e.clientX)
-    y.set(e.clientY)
-    setFlip(e.clientX > window.innerWidth * 0.55)
-  }
-
-  const current = active !== null ? engagements[active] : null
+function EngagementStack() {
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] })
 
   return (
-    <section className="bg-ink pb-40 pt-32 text-paper md:pt-40" onMouseMove={onMove}>
+    <section id="engagements" className="relative bg-ink pt-32 text-paper md:pt-44">
       <div className="mx-auto max-w-[1600px] px-6 md:px-10">
-        <div className="mb-16 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
           <div>
-            <p className="label mb-6 text-stone">Selected engagements</p>
+            <p className="label mb-6 text-stone">Selected engagements · 2026</p>
             <SplitText
               as="h2"
               inView
-              text="Explore the work."
-              italicWords={['work']}
-              className="font-serif text-5xl leading-[1] tracking-tight md:text-7xl"
+              text="Work we've delivered."
+              italicWords={['delivered']}
+              className="font-serif text-6xl leading-[0.95] tracking-tight md:text-8xl"
             />
           </div>
           <Reveal>
-            <p className="flex items-center gap-3 text-paper/60">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-garnet-bright opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-garnet-bright" />
-              </span>
-              Select an engagement to read the full case study
+            <p className="max-w-sm text-paper/60">
+              Three client engagements this year — across big tech, technology consulting, and national
+              energy research.
             </p>
           </Reveal>
         </div>
-
-        <div className="label hidden grid-cols-12 border-b border-white/10 pb-4 text-paper/40 md:grid">
-          <span className="md:col-span-1">No.</span>
-          <span className="md:col-span-5">Client & engagement</span>
-          <span className="md:col-span-3">Sector · Status</span>
-          <span className="text-right md:col-span-3">Case study</span>
-        </div>
-
-        <ul onMouseLeave={() => setActive(null)}>
-          {engagements.map((e, i) => (
-            <Reveal key={e.slug} delay={i * 0.1} y={30}>
-              <li onMouseEnter={() => setActive(i)}>
-                <TransitionLink
-                  to={`/engagements/${e.slug}`}
-                  label={e.clientShort}
-                  color={e.accent}
-                  className="group relative grid grid-cols-12 items-center gap-y-6 border-b border-white/10 py-10 md:py-12"
-                >
-                  <span className="pointer-events-none absolute inset-x-[-1.5rem] inset-y-0 rounded-2xl bg-white/[0.03] opacity-0 transition-opacity duration-500 group-hover:opacity-100 md:inset-x-[-2.5rem]" />
-                  <span
-                    className="absolute bottom-[-1px] left-0 h-px w-full origin-left scale-x-0 transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-x-100"
-                    style={{ background: e.accent }}
-                  />
-                  <span className="label relative col-span-2 text-paper/40 md:col-span-1">{e.index}</span>
-                  <div
-                    className={`relative col-span-10 transition-all duration-500 md:col-span-5 md:group-hover:translate-x-4 ${
-                      active !== null && active !== i ? 'opacity-30' : ''
-                    }`}
-                  >
-                    <p className="font-serif text-4xl leading-none tracking-tight md:text-6xl">{e.clientShort}</p>
-                    <p className="mt-3 max-w-lg text-paper/60">{e.title}</p>
-                  </div>
-                  <div className="relative col-span-12 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-paper/60 md:col-span-3 md:flex-col md:items-start">
-                    <span>{e.sector}</span>
-                    <span className="label inline-flex items-center gap-2 text-paper/50">
-                      <span className="h-1.5 w-1.5 rounded-full" style={{ background: e.accent }} />
-                      {e.statusShort}
-                    </span>
-                  </div>
-                  <span className="relative col-span-12 flex md:col-span-3 md:justify-end">
-                    <span
-                      className="relative inline-flex items-center gap-3 overflow-hidden rounded-full border py-2 pl-5 pr-2 text-sm transition-colors duration-500 group-hover:text-ink"
-                      style={{ borderColor: `${e.accent}66` }}
-                    >
-                      <span
-                        className="absolute inset-0 origin-left scale-x-0 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-x-100"
-                        style={{ background: e.accent }}
-                      />
-                      <span className="relative font-medium">View case study</span>
-                      <span
-                        className="relative grid h-9 w-9 place-items-center rounded-full text-ink transition-transform duration-500 group-hover:translate-x-1 group-hover:bg-ink group-hover:text-paper"
-                        style={{ background: active === i ? undefined : e.accent }}
-                      >
-                        →
-                      </span>
-                    </span>
-                  </span>
-                </TransitionLink>
-              </li>
-            </Reveal>
-          ))}
-        </ul>
       </div>
 
-      <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-30 hidden md:block"
-        style={{ x: sx, y: sy }}
-      >
-        <div
-          className={`-translate-y-1/2 transition-transform duration-500 ease-out ${
-            flip ? '-translate-x-[calc(100%+2.5rem)]' : 'translate-x-10'
-          }`}
-        >
-        <AnimatePresence>
-          {current && (
-            <motion.div
-              key="preview"
-              className="overflow-hidden rounded-2xl"
-              initial={{ scale: 0.4, opacity: 0, rotate: -8 }}
-              animate={{ scale: 1, opacity: 1, rotate: 0 }}
-              exit={{ scale: 0.4, opacity: 0, rotate: 8 }}
-              transition={{ duration: 0.5, ease: easeOut }}
-            >
-              <motion.div
-                className="grid h-72 w-80 place-items-center p-10"
-                animate={{ backgroundColor: current.accentSoft }}
-                transition={{ duration: 0.4 }}
-              >
-                <Motif key={current.slug} kind={current.motif} accent={current.accent} className="w-full text-ink" />
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        </div>
-      </motion.div>
+      <div ref={ref} className="mx-auto mt-20 max-w-[1600px] px-4 pb-32 md:px-10">
+        {engagements.map((e, i) => (
+          <StackCard key={e.slug} engagement={e} i={i} total={engagements.length} progress={scrollYProgress} />
+        ))}
+      </div>
     </section>
   )
 }
 
-function PartnerSection() {
-  const points = [
-    {
-      title: 'A dedicated student team',
-      body: 'Five to eight vetted members led by an experienced project leader, trained in case methodology.',
-    },
-    {
-      title: 'Real deliverables',
-      body: 'Research, models, and recommendations packaged into an executive-ready final presentation.',
-    },
-    {
-      title: 'A pipeline of talent',
-      body: "Early access to some of the University of South Carolina's most driven business students.",
-    },
-  ]
+function StackCard({
+  engagement: e,
+  i,
+  total,
+  progress,
+}: {
+  engagement: Engagement
+  i: number
+  total: number
+  progress: MotionValue<number>
+}) {
+  const targetScale = 1 - (total - 1 - i) * 0.05
+  const scale = useTransform(progress, [i / total, 1], [1, targetScale])
+  const dim = useTransform(progress, [i / total, 1], [0, (total - 1 - i) * 0.15])
+
   return (
-    <section className="bg-paper py-32 md:py-44">
-      <div className="mx-auto max-w-[1600px] px-6 md:px-10">
-        <div className="grid gap-10 md:grid-cols-12">
-          <p className="label text-stone md:col-span-3">For partners</p>
-          <div className="md:col-span-9">
-            <SplitText
-              as="h2"
-              inView
-              stagger={0.04}
-              text="Bring us a problem that matters. We'll bring the team."
-              className="font-serif text-5xl leading-[1] tracking-tight md:text-7xl"
+    <div className="sticky top-0 flex h-[100svh] items-center">
+      <motion.div style={{ scale, top: `${(i - 1) * 36}px` }} className="relative w-full origin-top">
+        <TransitionLink
+          to={`/engagements/${e.slug}`}
+          label={e.clientShort}
+          color={e.accent}
+          data-cursor="View"
+          className="group relative grid min-h-[72svh] overflow-hidden rounded-[28px] border border-white/10 bg-ink-2 md:grid-cols-2"
+        >
+          <div className="relative z-10 flex flex-col justify-between p-8 md:p-14">
+            <div className="flex items-center justify-between">
+              <span className="label text-paper/50">Engagement {e.index}</span>
+              <span className="label text-paper/50">{e.sector}</span>
+            </div>
+            <div className="mt-16">
+              <p className="font-serif text-2xl italic" style={{ color: e.accent }}>
+                {e.client}
+              </p>
+              <h3 className="mt-4 max-w-xl font-serif text-4xl leading-[1.02] tracking-tight md:text-6xl">
+                {e.title}
+              </h3>
+              <p className="mt-6 max-w-md leading-relaxed text-paper/60">{e.tagline}</p>
+              <div className="mt-8 flex flex-wrap gap-2">
+                {e.focus.map((f) => (
+                  <span key={f} className="label rounded-full border border-white/15 px-3 py-1.5 text-paper/70">
+                    {f}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <span className="mt-10 inline-flex items-center gap-3 text-sm">
+              <span
+                className="grid h-11 w-11 place-items-center rounded-full transition-transform duration-500 group-hover:scale-110"
+                style={{ background: e.accent, color: '#0b0d10' }}
+              >
+                →
+              </span>
+              Read the case study
+            </span>
+          </div>
+
+          <div className="relative flex items-center justify-center overflow-hidden p-10 text-paper/80">
+            <div
+              className="absolute inset-0 opacity-25 transition-opacity duration-700 group-hover:opacity-40"
+              style={{ background: `radial-gradient(circle at 50% 50%, ${e.accent}, transparent 65%)` }}
+            />
+            <Motif
+              kind={e.motif}
+              accent={e.accent}
+              className="relative w-full max-w-[420px] transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
             />
           </div>
+        </TransitionLink>
+        <motion.div
+          style={{ opacity: dim }}
+          className="pointer-events-none absolute inset-0 rounded-[28px] bg-ink"
+        />
+      </motion.div>
+    </div>
+  )
+}
+
+function Process() {
+  const ref = useRef<HTMLElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [distance, setDistance] = useState(0)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] })
+  const x = useTransform(scrollYProgress, [0, 1], [0, -distance])
+  const bar = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      const el = trackRef.current
+      if (el) setDistance(Math.max(0, el.scrollWidth - window.innerWidth))
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [])
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const el = trackRef.current
+      if (el) setDistance(Math.max(0, el.scrollWidth - window.innerWidth))
+    }, 500)
+    return () => clearTimeout(t)
+  }, [])
+
+  const steps = [
+    { title: 'Scope', body: 'We align with client leadership on the core question, success criteria, and the hypotheses worth testing.' },
+    { title: 'Research', body: 'Primary interviews, surveys, market and regulatory research — whatever the problem demands.' },
+    { title: 'Analyze', body: 'Frameworks, financial models, and data synthesis that turn raw findings into insight.' },
+    { title: 'Recommend', body: 'Clear, prioritized recommendations with a roadmap the client can actually execute.' },
+    { title: 'Deliver', body: 'An executive readout to client stakeholders — the same bar as a professional engagement.' },
+  ]
+
+  return (
+    <section ref={ref} className="relative h-[400vh] bg-paper">
+      <div className="sticky top-0 flex h-[100svh] flex-col justify-center overflow-hidden">
+        <div className="mx-auto mb-14 flex w-full max-w-[1600px] items-end justify-between px-6 md:px-10">
+          <div>
+            <p className="label mb-5 text-stone">How an engagement runs</p>
+            <h2 className="font-serif text-5xl leading-none tracking-tight md:text-7xl">
+              From question <span className="italic text-garnet">to answer.</span>
+            </h2>
+          </div>
+          <div className="hidden w-64 md:block">
+            <div className="h-px w-full bg-ink/15">
+              <motion.div style={{ width: bar }} className="h-px bg-garnet" />
+            </div>
+          </div>
         </div>
-        <div className="mt-20 grid gap-6 md:grid-cols-3">
-          {points.map((p, i) => (
-            <Reveal key={p.title} delay={i * 0.12}>
-              <div className="h-full rounded-[24px] border border-ink/10 bg-paper-2 p-8 transition-transform duration-500 hover:-translate-y-2">
-                <span className="label text-garnet">0{i + 1}</span>
-                <h3 className="mt-12 font-serif text-3xl">{p.title}</h3>
-                <p className="mt-4 leading-relaxed text-ink/60">{p.body}</p>
+
+        <motion.div ref={trackRef} style={{ x }} className="flex gap-6 pl-6 pr-[10vw] md:pl-10">
+          {steps.map((s, i) => (
+            <div
+              key={s.title}
+              className="relative flex h-[50svh] w-[80vw] shrink-0 flex-col justify-between rounded-[24px] border border-ink/10 bg-paper-2 p-8 md:w-[34vw] md:p-12"
+            >
+              <div className="flex items-start justify-between">
+                <span className="font-serif text-8xl leading-none text-garnet md:text-9xl">0{i + 1}</span>
+                <span className="label text-stone">Phase</span>
               </div>
-            </Reveal>
+              <div>
+                <h3 className="font-serif text-4xl md:text-5xl">{s.title}</h3>
+                <p className="mt-4 max-w-sm leading-relaxed text-ink/60">{s.body}</p>
+              </div>
+            </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   )

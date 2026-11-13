@@ -12,6 +12,10 @@ export type Competition = {
   sponsor?: string
   image: string
   imageAlt: string
+  /** Display frame width / height; caps how wide the photo can stretch. */
+  frame: number
+  /** CSS object-position used when cropping into the frame. */
+  focus: string
 }
 
 const img = (file: string) => asset(`images/competitions/${file}`)
@@ -28,6 +32,8 @@ export const international: Competition[] = [
     result: '1st Place',
     image: img('nhh-1st.jpg'),
     imageAlt: 'GCC team holding the first-place trophy at the NHH International Case Competition',
+    frame: 16 / 9,
+    focus: '50% 35%',
   },
   {
     slug: 'tu-dublin',
@@ -40,6 +46,8 @@ export const international: Competition[] = [
     result: '1st Place',
     image: img('tu-dublin.jpg'),
     imageAlt: 'GCC team wearing first-place medals at the TU Dublin case competition',
+    frame: 3 / 2,
+    focus: '50% 8%',
   },
   {
     slug: 'nhh-2nd',
@@ -52,6 +60,8 @@ export const international: Competition[] = [
     result: '2nd Place',
     image: img('nhh-2nd.jpg'),
     imageAlt: 'GCC team holding the second-place trophy at the NHH International Case Competition',
+    frame: 3 / 2,
+    focus: '50% 30%',
   },
   {
     slug: 'hkicc',
@@ -64,6 +74,8 @@ export const international: Competition[] = [
     sponsor: 'HSBC',
     image: img('hkicc.jpg'),
     imageAlt: 'GCC team at the HKUST International Case Competition in Hong Kong',
+    frame: 4 / 3,
+    focus: '50% 40%',
   },
   {
     slug: 'sibc',
@@ -75,6 +87,8 @@ export const international: Competition[] = [
     coords: '33.86° S, 151.21° E',
     image: img('sibc.jpg'),
     imageAlt: 'GCC team in front of the Sydney Opera House',
+    frame: 4 / 3,
+    focus: '50% 50%',
   },
 ]
 
