@@ -76,8 +76,12 @@ export default function Nav() {
                       }`}
                     />
                   </TransitionLink>
-                  {isEngagementsLink && onEngagements && (
-                    <div className="flex items-center gap-3 border-l border-current/25 pl-4 lg:gap-4 lg:pl-5">
+                  {isEngagementsLink && (
+                    <div
+                      className={`items-center gap-3 border-l border-current/25 pl-4 lg:gap-4 lg:pl-5 ${
+                        onEngagements ? 'flex' : 'hidden xl:flex'
+                      }`}
+                    >
                       {engagements.map((eng) => {
                         const isActive = eng.slug === activeSlug
                         return (
