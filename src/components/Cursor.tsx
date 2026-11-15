@@ -20,7 +20,13 @@ export default function Cursor() {
     const move = (e: PointerEvent) => {
       x.set(e.clientX)
       y.set(e.clientY)
-      const target = (e.target as HTMLElement | null)?.closest<HTMLElement>('a, button, [data-cursor]')
+      const el = e.target as HTMLElement | null
+      if (el?.closest('[data-cursor-ignore]')) {
+        setHovering(false)
+        setLabel(null)
+        return
+      }
+      const target = el?.closest<HTMLElement>('a, button, [data-cursor]')
       setHovering(!!target)
       setLabel(target?.dataset.cursor ?? null)
     }
