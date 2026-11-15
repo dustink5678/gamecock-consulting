@@ -187,7 +187,7 @@ export const engagements: Engagement[] = [
       {
         caption: 'Capgemini engagement team',
         slide: img('capgemini-team.jpg'),
-        members: [{ name: 'Hanah' }, { name: 'Dustin' }, { name: 'Patrick' }],
+        members: [{ name: 'Hanah Ciccarelli' }, { name: 'Dustin King' }, { name: 'Patrick Cox' }],
       },
     ],
   },
