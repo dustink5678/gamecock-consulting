@@ -58,16 +58,16 @@ export default function Nav() {
             </span>
           </TransitionLink>
 
-          <nav className="hidden items-center gap-9 md:flex">
+          <nav className="hidden items-center gap-7 md:flex lg:gap-9 xl:gap-10">
             {navLinks.map((l) => {
               const active = location.pathname.startsWith(l.to)
               const isEngagementsLink = l.to === '/engagements'
               return (
-                <div key={l.to} className="flex items-center gap-5">
+                <div key={l.to} className="flex items-center gap-4 lg:gap-5">
                   <TransitionLink
                     to={l.to}
                     label={l.label}
-                    className="group relative font-serif text-sm leading-none tracking-tight"
+                    className="group relative font-serif text-sm leading-none tracking-tight lg:text-base xl:text-lg"
                   >
                     {l.label}
                     <span
@@ -77,7 +77,7 @@ export default function Nav() {
                     />
                   </TransitionLink>
                   {isEngagementsLink && onEngagements && (
-                    <div className="flex items-center gap-4 border-l border-current/25 pl-5">
+                    <div className="flex items-center gap-3 border-l border-current/25 pl-4 lg:gap-4 lg:pl-5">
                       {engagements.map((eng) => {
                         const isActive = eng.slug === activeSlug
                         return (
@@ -90,7 +90,7 @@ export default function Nav() {
                             aria-current={isActive ? 'page' : undefined}
                           >
                             <span
-                              className={`font-serif text-sm leading-none tracking-tight transition-opacity duration-300 ${
+                              className={`font-serif text-sm leading-none tracking-tight transition-opacity duration-300 lg:text-base xl:text-lg ${
                                 isActive ? 'opacity-100' : 'opacity-40 group-hover:opacity-75'
                               }`}
                             >
@@ -111,7 +111,7 @@ export default function Nav() {
             })}
             <a
               href="mailto:gamecockconsulting@gmail.com"
-              className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-full border border-current px-5 font-serif text-sm leading-none tracking-tight transition-colors hover:bg-paper hover:text-ink"
+              className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-full border border-current px-5 font-serif text-sm leading-none tracking-tight transition-colors hover:bg-paper hover:text-ink lg:h-10 lg:px-6 lg:text-base xl:h-11 xl:text-lg"
             >
               Partner with us
             </a>
