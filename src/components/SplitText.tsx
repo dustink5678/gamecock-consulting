@@ -36,9 +36,9 @@ export default function SplitText({
         className="inline"
       >
         {words.map((word, i) => (
-          <span key={i} className="inline-block overflow-hidden pb-[0.12em] align-bottom">
+          <span key={i} className="inline-block overflow-hidden px-[0.08em] pb-[0.12em] -mx-[0.08em] align-bottom">
             <motion.span
-              className={`inline-block ${italicWords.includes(word.replace(/[.,]/g, '')) ? 'italic' : ''}`}
+              className={`inline-block ${italicWords.includes(word.replace(/[.,']/g, '')) ? 'italic' : ''}`}
               variants={{
                 hidden: { y: '110%', rotate: 4 },
                 show: { y: '0%', rotate: 0, transition: { duration: 1, ease: easeOut } },

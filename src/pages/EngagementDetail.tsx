@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useScroll, useSpring, useTransform } from 'framer-motion'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLenis } from 'lenis/react'
+import { useEffect, useMemo, useRef } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import Counter from '../components/Counter'
 import Footer from '../components/Footer'
 import Motif from '../components/Motif'
@@ -12,8 +13,6 @@ import SplitText from '../components/SplitText'
 import { engagements, getEngagement } from '../data/engagements'
 import type { Engagement, Project, Team } from '../data/engagements'
 import { easeOut } from '../lib/motion'
-import { TransitionLink } from '../lib/transition'
-import ComingSoon from './ComingSoon'
 
 type SectionMeta = { id: string; label: string; n: string }
 
@@ -27,29 +26,55 @@ function buildSections(e: Engagement): SectionMeta[] {
 }
 
 export default function EngagementDetail() {
-  const { slug } = useParams()
-  const e = getEngagement(slug)
-  const sections = useMemo(() => (e ? buildSections(e) : []), [e])
-  if (!e) return <ComingSoon title="Engagement not found" blurb="We couldn't find that engagement." />
+  const { slug: rawSlug } = useParams()
+  const navigate = useNavigate()
+  const lenis = useLenis()
+  const slug = rawSlug && getEngagement(rawSlug) ? rawSlug : 'google'
+  const e = getEngagement(slug)!
+  const sections = useMemo(() => buildSections(e), [e])
 
-  const idx = engagements.indexOf(e)
+  useEffect(() => {
+    if (!rawSlug || !getEngagement(rawSlug)) {
+      navigate('/engagements/google', { replace: true })
+    }
+  }, [rawSlug, navigate])
+
+  const select = (nextSlug: string) => {
+    if (nextSlug === slug) return
+    navigate(`/engagements/${nextSlug}`, { replace: false })
+    lenis?.scrollTo(0, { immediate: true, force: true })
+    window.scrollTo(0, 0)
+  }
+
+  const idx = engagements.findIndex((x) => x.slug === slug)
   const next = engagements[(idx + 1) % engagements.length]
   const n = (id: string) => sections.find((s) => s.id === id)?.n ?? ''
 
   return (
     <PageTransition>
-      <ProgressBar accent={e.accent} />
-      <SectionIndicator accent={e.accent} sections={sections} />
-      <Hero e={e} />
-      <Overview e={e} n={n('overview')} />
-      {e.photos?.length ? <Photos e={e} n={n('field')} /> : null}
-      {e.scale ? <Scale e={e} n={n('scale')} /> : null}
-      {e.projects.map((p, i) => (
-        <ProjectBlock key={i} id={`project-${i}`} n={n(`project-${i}`)} project={p} e={e} />
-      ))}
-      {e.teams?.length ? <Teams teams={e.teams} n={n('team')} /> : null}
-      <NextEngagement next={next} />
-      <Footer />
+      <div className="bg-ink">
+        <ProgressBar accent={e.accent} />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={e.slug}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.55, ease: easeOut }}
+          >
+            <Hero e={e} />
+            <Overview e={e} n={n('overview')} />
+            {e.photos?.length ? <Photos e={e} n={n('field')} /> : null}
+            {e.scale ? <Scale e={e} n={n('scale')} /> : null}
+            {e.projects.map((p, i) => (
+              <ProjectBlock key={i} id={`project-${i}`} n={n(`project-${i}`)} project={p} e={e} />
+            ))}
+            {e.teams?.length ? <Teams teams={e.teams} n={n('team')} /> : null}
+            <NextEngagement next={next} onSelect={() => select(next.slug)} />
+          </motion.div>
+        </AnimatePresence>
+        <Footer />
+      </div>
     </PageTransition>
   )
 }
@@ -59,82 +84,9 @@ function ProgressBar({ accent }: { accent: string }) {
   const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30 })
   return (
     <motion.div
-      className="fixed inset-x-0 top-0 z-[60] h-[3px] origin-left"
+      className="fixed inset-x-0 top-0 z-[60] h-[2px] origin-left"
       style={{ scaleX, background: accent }}
     />
-  )
-}
-
-function SectionIndicator({ accent, sections }: { accent: string; sections: SectionMeta[] }) {
-  const [active, setActive] = useState<number>(-1)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActive(sections.findIndex((s) => s.id === entry.target.id))
-        })
-      },
-      { rootMargin: '-45% 0px -45% 0px' },
-    )
-    const els = sections.map((s) => document.getElementById(s.id)).filter((el): el is HTMLElement => !!el)
-    els.forEach((el) => observer.observe(el))
-
-    const edgeObserver = new IntersectionObserver(
-      (entries) => entries.forEach((entry) => entry.isIntersecting && setActive(-1)),
-      { rootMargin: '-45% 0px -45% 0px' },
-    )
-    ;['hero', 'next'].forEach((id) => {
-      const el = document.getElementById(id)
-      if (el) edgeObserver.observe(el)
-    })
-
-    return () => {
-      observer.disconnect()
-      edgeObserver.disconnect()
-    }
-  }, [sections])
-
-  return (
-    <AnimatePresence>
-      {active >= 0 && (
-        <motion.div
-          className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-4 rounded-full border border-white/10 bg-ink/85 py-2.5 pl-3 pr-5 text-paper backdrop-blur-md"
-          initial={{ y: 80, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 80, opacity: 0 }}
-          transition={{ duration: 0.6, ease: easeOut }}
-        >
-          <div className="flex gap-1.5">
-            {sections.map((s, i) => (
-              <motion.span
-                key={s.id}
-                className="h-1.5 rounded-full"
-                animate={{
-                  width: i === active ? 22 : 6,
-                  backgroundColor: i <= active ? accent : 'rgba(244,241,234,0.25)',
-                }}
-                transition={{ duration: 0.5, ease: easeOut }}
-              />
-            ))}
-          </div>
-          <div className="relative h-5 w-36 overflow-hidden">
-            <AnimatePresence mode="popLayout" initial={false}>
-              <motion.span
-                key={active}
-                className="label absolute inset-0 flex items-center"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -20, opacity: 0 }}
-                transition={{ duration: 0.4, ease: easeOut }}
-              >
-                {sections[active]?.label}
-              </motion.span>
-            </AnimatePresence>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
   )
 }
 
@@ -158,20 +110,18 @@ function Hero({ e }: { e: Engagement }) {
         className="pointer-events-none absolute -right-[20vw] top-[-20vh] h-[90vmax] w-[90vmax] rounded-full opacity-30 blur-[140px]"
         style={{ background: `radial-gradient(circle, ${e.accent}, transparent 60%)` }}
       />
-      <div className="relative mx-auto grid min-h-[100svh] max-w-[1600px] items-end gap-10 px-6 pb-16 pt-36 md:grid-cols-12 md:px-10">
+      <div className="relative mx-auto grid min-h-[100svh] max-w-[1600px] items-end gap-10 px-6 pb-16 pt-16 md:grid-cols-12 md:px-10 md:pt-20">
         <motion.div style={{ y: textY }} className="md:col-span-7">
-          <motion.div
-            className="label mb-10 flex items-center gap-3 text-paper/50"
+          <motion.p
+            className="label mb-10 text-paper/50"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.9, duration: 1, ease: easeOut }}
           >
-            <TransitionLink to="/engagements" label="Engagements" className="hover:text-paper">
-              Engagements
-            </TransitionLink>
-            <span>/</span>
+            Pillar 01 — Client engagements
+            <span className="mx-3 text-paper/25">/</span>
             <span style={{ color: e.accent }}>{e.index}</span>
-          </motion.div>
+          </motion.p>
 
           <h1 className="font-serif text-[16vw] leading-[0.85] tracking-[-0.03em] md:text-[10vw]">
             <SplitText text={e.clientShort} delay={0.75} />
@@ -591,7 +541,7 @@ function Teams({ teams, n }: { teams: Team[]; n: string }) {
   )
 }
 
-function NextEngagement({ next }: { next: Engagement }) {
+function NextEngagement({ next, onSelect }: { next: Engagement; onSelect: () => void }) {
   const ref = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end end'] })
   const scale = useTransform(scrollYProgress, [0, 1], [0.85, 1])
@@ -600,12 +550,11 @@ function NextEngagement({ next }: { next: Engagement }) {
   return (
     <section id="next" ref={ref} className="bg-paper">
       <motion.div style={{ scale, borderRadius: radius }} className="overflow-hidden">
-        <TransitionLink
-          to={`/engagements/${next.slug}`}
-          label={next.clientShort}
-          color={next.accent}
+        <button
+          type="button"
+          onClick={onSelect}
           data-cursor="Next"
-          className="group relative block overflow-hidden bg-ink-2 px-6 py-32 text-paper md:px-10 md:py-44"
+          className="group relative block w-full overflow-hidden bg-ink-2 px-6 py-32 text-left text-paper md:px-10 md:py-44"
         >
           <span
             className="absolute inset-0 origin-bottom scale-y-0 transition-transform duration-[900ms] ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-y-100"
@@ -627,7 +576,7 @@ function NextEngagement({ next }: { next: Engagement }) {
               →
             </span>
           </div>
-        </TransitionLink>
+        </button>
       </motion.div>
     </section>
   )

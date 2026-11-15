@@ -8,7 +8,6 @@ import { TransitionProvider } from './lib/transition'
 import CaseCompetitions from './pages/CaseCompetitions'
 import ComingSoon from './pages/ComingSoon'
 import EngagementDetail from './pages/EngagementDetail'
-import Engagements from './pages/Engagements'
 import Home from './pages/Home'
 import MemberDevelopment from './pages/MemberDevelopment'
 
@@ -25,12 +24,16 @@ function AnimatedRoutes() {
     window.scrollTo(0, 0)
   }
 
+  // Keep /engagements and /engagements/:slug on one mounted tree so tab switches stay seamless.
+  const routeKey = location.pathname.startsWith('/engagements')
+    ? '/engagements'
+    : location.pathname
+
   return (
     <AnimatePresence mode="wait" onExitComplete={resetScroll}>
-      <Routes location={location} key={location.pathname}>
+      <Routes location={location} key={routeKey}>
         <Route path="/" element={<Home />} />
-        <Route path="/engagements" element={<Engagements />} />
-        <Route path="/engagements/:slug" element={<EngagementDetail />} />
+        <Route path="/engagements/:slug?" element={<EngagementDetail />} />
         <Route path="/case-competitions" element={<CaseCompetitions />} />
         <Route path="/member-development" element={<MemberDevelopment />} />
         <Route path="*" element={<ComingSoon title="Page not found" blurb="This page doesn't exist — yet." />} />

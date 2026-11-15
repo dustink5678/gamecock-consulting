@@ -120,7 +120,7 @@ function Hero() {
 }
 
 const headline = [
-  { lead: 'Advising', accent: 'Google.' },
+  { lead: 'Advising', accent: 'enterprises.' },
   { lead: 'Winning', accent: 'worldwide.' },
   { lead: 'Placing at', accent: 'MBB.' },
 ]

@@ -9,7 +9,7 @@ import Reveal from '../components/Reveal'
 import ScrollWords from '../components/ScrollWords'
 import SplitText from '../components/SplitText'
 import VelocityMarquee from '../components/VelocityMarquee'
-import { big4Total, boutique, categories, companyTotal, featured, firms, mbbThisYear } from '../data/placements'
+import { boutique, categories, companyTotal, featured, firms, mbbThisYear } from '../data/placements'
 import type { Category } from '../data/placements'
 import { easeOut } from '../lib/motion'
 
@@ -77,7 +77,7 @@ function Hero() {
         <h1 className="font-serif text-[16vw] leading-[0.86] tracking-[-0.03em] md:text-[10vw]">
           <SplitText text="Where Gamecocks" delay={0.75} />
           <br />
-          <SplitText text="go next." delay={0.95} className="italic text-garnet-bright" />
+          <SplitText text="go next." delay={0.95} className="italic text-garnet-bright [padding-left:0.06em]" />
         </h1>
         <div className="mt-14 grid gap-10 md:grid-cols-12">
           <motion.p
@@ -121,7 +121,7 @@ function Hero() {
 function Stats() {
   const stats = [
     { value: mbbThisYear, label: 'Placements at McKinsey, Bain & BCG this year' },
-    { value: big4Total, label: 'Placements at the Big 4' },
+    { value: 300, suffix: '+', label: "Alumni network inside the world's top corporations" },
     { value: companyTotal, suffix: '+', label: 'Top firms, funds & companies' },
   ]
   return (
