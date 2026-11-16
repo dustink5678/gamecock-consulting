@@ -97,13 +97,6 @@ function Hero({ e }: { e: Engagement }) {
   const motifRotate = useTransform(scrollYProgress, [0, 1], [0, 25])
   const textY = useTransform(scrollYProgress, [0, 1], ['0%', '20%'])
 
-  const meta = [
-    { k: 'Client', v: e.client },
-    { k: 'Sector', v: e.sector },
-    { k: 'Focus', v: e.focus.join(', ') },
-    { k: 'Status', v: e.status },
-  ]
-
   return (
     <section id="hero" ref={ref} className="grain relative overflow-hidden bg-ink text-paper">
       <div
@@ -129,26 +122,6 @@ function Hero({ e }: { e: Engagement }) {
           <h2 className="mt-6 max-w-2xl text-xl leading-snug text-paper/85 sm:text-2xl md:mt-8 md:text-3xl">
             <SplitText text={e.title} delay={1} stagger={0.03} />
           </h2>
-
-          <motion.dl
-            className="mt-14 grid grid-cols-2 gap-x-8 gap-y-6 border-t border-white/10 pt-8 md:grid-cols-4"
-            initial="hidden"
-            animate="show"
-            transition={{ staggerChildren: 0.08, delayChildren: 1.3 }}
-          >
-            {meta.map((m) => (
-              <motion.div
-                key={m.k}
-                variants={{
-                  hidden: { opacity: 0, y: 16 },
-                  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: easeOut } },
-                }}
-              >
-                <dt className="label text-paper/40">{m.k}</dt>
-                <dd className="mt-2 text-sm text-paper/85">{m.v}</dd>
-              </motion.div>
-            ))}
-          </motion.dl>
         </motion.div>
 
         <motion.div
@@ -339,8 +312,6 @@ function ProjectBlock({ id, n, project: p, e }: { id: string; n: string; project
       <Workstreams project={p} e={e} n={n} showLabel={!p.title} />
 
       {p.deliverables?.length ? <Deliverables project={p} e={e} /> : null}
-
-      {p.outcome || p.note ? <Outcome project={p} e={e} /> : null}
     </div>
   )
 }
@@ -441,40 +412,6 @@ function Deliverables({ project: p, e }: { project: Project; e: Engagement }) {
               </div>
             </Reveal>
           ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function Outcome({ project: p, e }: { project: Project; e: Engagement }) {
-  return (
-    <section className="py-28 md:py-36" style={{ background: e.accentSoft }}>
-      <div className="mx-auto grid max-w-[1600px] gap-12 px-6 md:grid-cols-12 md:px-10">
-        <div className="md:col-span-3">
-          <p className="label flex items-center gap-3 text-ink/60">
-            <span className="h-2 w-2 rounded-full" style={{ background: e.accent }} />
-            {p.outcome ? 'Outcome' : 'Approach'}
-          </p>
-        </div>
-        <div className="md:col-span-9">
-          {p.outcome && (
-            <Reveal>
-              <p className="max-w-5xl font-serif text-4xl leading-[1.12] tracking-tight md:text-6xl">{p.outcome}</p>
-            </Reveal>
-          )}
-          {p.note && (
-            <Reveal delay={0.15}>
-              <p
-                className={`max-w-3xl leading-relaxed text-ink/65 ${
-                  p.outcome ? 'mt-10 border-l-2 pl-5 text-base italic' : 'font-serif text-3xl leading-snug text-ink md:text-4xl'
-                }`}
-                style={p.outcome ? { borderColor: e.accent } : undefined}
-              >
-                {p.note}
-              </p>
-            </Reveal>
-          )}
         </div>
       </div>
     </section>

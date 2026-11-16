@@ -94,30 +94,12 @@ export const engagements: Engagement[] = [
       {
         workstreamsTitle: 'Advanced analysis and deliverables',
         workstreams: [
-          {
-            title: 'AI-assisted qualitative analysis',
-            body: "Applied a local language model to identify themes across 2,399 open-ended answers, connecting numerical findings with students' experiences.",
-          },
-          {
-            title: 'Controlled statistical modeling',
-            body: 'Examined relationships among usage, sentiment, and company perceptions while accounting for differences in respondent characteristics.',
-          },
-          {
-            title: 'Audience segmentation',
-            body: 'Evaluated 3,794 combinations of respondent traits, applying false-discovery correction to reduce the risk of highlighting chance findings.',
-          },
-          {
-            title: 'Comparative analysis and visualizations',
-            body: 'Developed usage profiles, company comparisons, and visual narratives tracing relationships among information sources, experiences, and attitudes.',
-          },
-          {
-            title: 'Strategic presentation',
-            body: 'Consolidated the research into a comprehensive presentation, translating findings into strategic recommendations for Google.',
-          },
+          { title: 'AI-assisted qualitative analysis' },
+          { title: 'Controlled statistical modeling' },
+          { title: 'Audience segmentation' },
+          { title: 'Comparative analysis and visualizations' },
+          { title: 'Strategic presentation' },
         ],
-        outcome:
-          'The engagement delivered a structured evidence base for understanding student perspectives and evaluating strategic opportunities.',
-        note: 'Findings reflect the surveyed USC population and were treated as directional rather than nationally representative.',
       },
     ],
     teams: [
@@ -244,34 +226,12 @@ export const engagements: Engagement[] = [
         ],
         workstreamsTitle: 'Planned calculations and analysis',
         workstreams: [
-          {
-            title: 'Lifecycle cost comparisons',
-            body: 'Calculate procurement, handling, storage, maintenance, transportation, and potential repackaging costs, separating shared expenses from costs that distinguish alternatives.',
-          },
-          {
-            title: 'Quantity and schedule modeling',
-            body: 'Determine equipment requirements, shipment volumes, and annual spending under different capacity and timing assumptions.',
-          },
-          {
-            title: 'Financial projections',
-            body: 'Compare constant-dollar, escalated, and present-value costs over the modeled lifecycle.',
-          },
-          {
-            title: 'Scenario and breakeven analysis',
-            body: 'Evaluate how changes in schedules, equipment prices, and future acceptance requirements affect the relative cost of alternatives.',
-          },
-          {
-            title: 'Sensitivity and uncertainty analysis',
-            body: 'Identify the strongest cost drivers and use Monte Carlo simulation to estimate potential cost ranges and the likelihood that one alternative costs less than another.',
-          },
+          { title: 'Lifecycle cost comparisons' },
+          { title: 'Quantity and schedule modeling' },
+          { title: 'Financial projections' },
+          { title: 'Scenario and breakeven analysis' },
+          { title: 'Sensitivity and uncertainty analysis' },
         ],
-        deliverablesTitle: 'Planned deliverables',
-        deliverables: [
-          'Excel decision-support model',
-          'Interactive charts and a summary dashboard',
-          'Written report or presentation',
-        ],
-        note: "Inputs and assumptions will remain traceable so SRNL's scientists and engineers can update the analysis as information becomes available.",
       },
     ],
     teams: [

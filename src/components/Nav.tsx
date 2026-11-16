@@ -165,8 +165,8 @@ export default function Nav() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: easeOut }}
           >
-            <div className="flex min-h-0 flex-1 flex-col px-6 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-24">
-              <nav className="flex min-h-0 flex-1 flex-col justify-center gap-1 overflow-y-auto py-4">
+            <div className="flex flex-1 flex-col overflow-hidden px-6 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-24">
+              <nav className="flex flex-1 flex-col justify-center gap-1 overflow-hidden py-2">
                 <motion.div
                   initial={{ y: 28, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
