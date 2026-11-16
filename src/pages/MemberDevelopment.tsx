@@ -64,24 +64,24 @@ function Hero() {
   const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0])
 
   return (
-    <section ref={ref} className="grain relative overflow-hidden bg-ink pt-44 text-paper md:pt-52">
+    <section ref={ref} className="grain relative overflow-hidden bg-ink pt-32 text-paper md:pt-52">
       <motion.div style={{ y, opacity }} className="relative mx-auto max-w-[1600px] px-6 md:px-10">
         <motion.p
-          className="label mb-8 text-paper/50"
+          className="label mb-6 text-paper/50 md:mb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9 }}
         >
           Pillar 03 — Member development
         </motion.p>
-        <h1 className="font-serif text-[16vw] leading-[0.86] tracking-[-0.03em] md:text-[10vw]">
+        <h1 className="font-serif text-[clamp(3rem,14vw,10rem)] leading-[0.86] tracking-[-0.03em] md:text-[10vw]">
           <SplitText text="Where Gamecocks" delay={0.75} />
           <br />
           <SplitText text="go next." delay={0.95} className="italic text-garnet-bright [padding-left:0.06em]" />
         </h1>
-        <div className="mt-14 grid gap-10 md:grid-cols-12">
+        <div className="mt-10 grid gap-10 md:mt-14 md:grid-cols-12">
           <motion.p
-            className="text-xl leading-relaxed text-paper/70 md:col-span-6 md:col-start-7"
+            className="text-lg leading-relaxed text-paper/70 sm:text-xl md:col-span-6 md:col-start-7"
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1.2, ease: easeOut }}

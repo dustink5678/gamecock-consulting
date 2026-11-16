@@ -86,55 +86,102 @@ export default function Footer() {
           Let&rsquo;s <span className="italic text-garnet-bright">talk.</span>
         </h2>
 
-        <div className="-mx-6 mt-14 overflow-x-auto px-6 [scrollbar-width:none] md:mx-0 md:mt-16 md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
-          <ul className="flex w-max items-center gap-5 md:w-full md:justify-between md:gap-0">
-            {circles.map((c) => (
-              <li key={c.href} className="shrink-0">
-                <Magnetic strength={0.22}>
-                  <a
-                    href={c.href}
-                    data-cursor-ignore
-                    className="relative grid h-[9.25rem] w-[9.25rem] place-items-center overflow-hidden rounded-full px-3 text-center text-paper md:h-44 md:w-44 lg:h-52 lg:w-52 xl:h-56 xl:w-56"
-                  >
-                    {c.logos ? (
-                      <span
-                        aria-hidden
-                        className="absolute inset-[-12%] grid rotate-[-8deg] grid-cols-4 content-center items-center justify-items-center gap-x-3 gap-y-4 bg-[#ebe6db] p-4"
-                      >
-                        {c.logos.map((src) => (
-                          <img
-                            key={src}
-                            src={src}
-                            alt=""
-                            draggable={false}
-                            className="h-5 w-full max-w-[2.6rem] object-contain brightness-0 md:h-6 md:max-w-[3rem] lg:h-7"
-                          />
-                        ))}
-                      </span>
-                    ) : (
-                      <img
-                        src={c.image}
-                        alt=""
-                        aria-hidden
-                        draggable={false}
-                        className="absolute inset-0 h-full w-full object-cover"
-                        style={{ objectPosition: c.focus }}
-                      />
-                    )}
-                    <span className="absolute inset-0" style={{ backgroundColor: c.overlay }} />
-                    <span className="relative z-10 font-serif text-xl leading-[1.1] tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] md:text-2xl lg:text-[1.65rem]">
-                      {c.lines.map((line) => (
-                        <span key={line} className="block">
-                          {line}
-                        </span>
+        {/* Mobile: stacked action rows — no horizontal scroll */}
+        <ul className="mt-12 divide-y divide-white/10 border-y border-white/10 md:hidden">
+          {circles.map((c) => (
+            <li key={c.href}>
+              <a
+                href={c.href}
+                data-cursor-ignore
+                className="group flex items-center gap-4 py-4"
+              >
+                <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full">
+                  {c.logos ? (
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 grid rotate-[-8deg] grid-cols-3 content-center items-center justify-items-center gap-1 bg-[#ebe6db] p-1.5"
+                    >
+                      {c.logos.slice(0, 6).map((src) => (
+                        <img
+                          key={src}
+                          src={src}
+                          alt=""
+                          draggable={false}
+                          className="h-3 w-full max-w-[1.4rem] object-contain brightness-0"
+                        />
                       ))}
                     </span>
-                  </a>
-                </Magnetic>
-              </li>
-            ))}
-          </ul>
-        </div>
+                  ) : (
+                    <img
+                      src={c.image}
+                      alt=""
+                      aria-hidden
+                      draggable={false}
+                      className="absolute inset-0 h-full w-full object-cover"
+                      style={{ objectPosition: c.focus }}
+                    />
+                  )}
+                  <span className="absolute inset-0" style={{ backgroundColor: c.overlay }} />
+                </span>
+                <span className="min-w-0 flex-1 font-serif text-xl leading-tight tracking-tight">
+                  {c.lines.join(' ')}
+                </span>
+                <span className="shrink-0 text-paper/40 transition-transform duration-300 group-active:translate-x-1">
+                  →
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        {/* Desktop: circular CTAs */}
+        <ul className="mt-16 hidden w-full items-center justify-between md:flex">
+          {circles.map((c) => (
+            <li key={c.href} className="shrink-0">
+              <Magnetic strength={0.22}>
+                <a
+                  href={c.href}
+                  data-cursor-ignore
+                  className="relative grid h-44 w-44 place-items-center overflow-hidden rounded-full px-3 text-center text-paper lg:h-52 lg:w-52 xl:h-56 xl:w-56"
+                >
+                  {c.logos ? (
+                    <span
+                      aria-hidden
+                      className="absolute inset-[-12%] grid rotate-[-8deg] grid-cols-4 content-center items-center justify-items-center gap-x-3 gap-y-4 bg-[#ebe6db] p-4"
+                    >
+                      {c.logos.map((src) => (
+                        <img
+                          key={src}
+                          src={src}
+                          alt=""
+                          draggable={false}
+                          className="h-5 w-full max-w-[2.6rem] object-contain brightness-0 md:h-6 md:max-w-[3rem] lg:h-7"
+                        />
+                      ))}
+                    </span>
+                  ) : (
+                    <img
+                      src={c.image}
+                      alt=""
+                      aria-hidden
+                      draggable={false}
+                      className="absolute inset-0 h-full w-full object-cover"
+                      style={{ objectPosition: c.focus }}
+                    />
+                  )}
+                  <span className="absolute inset-0" style={{ backgroundColor: c.overlay }} />
+                  <span className="relative z-10 font-serif text-2xl leading-[1.1] tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] lg:text-[1.65rem]">
+                    {c.lines.map((line) => (
+                      <span key={line} className="block">
+                        {line}
+                      </span>
+                    ))}
+                  </span>
+                </a>
+              </Magnetic>
+            </li>
+          ))}
+        </ul>
 
         <div className="mt-24 grid gap-10 border-t border-white/10 pt-10 text-sm md:grid-cols-4">
           <div>

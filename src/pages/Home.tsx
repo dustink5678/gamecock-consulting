@@ -52,7 +52,7 @@ function Hero() {
     <section
       ref={ref}
       onMouseMove={onMove}
-      className="grain relative flex min-h-[100svh] flex-col overflow-hidden bg-ink text-paper"
+      className="grain relative flex min-h-[100svh] flex-col overflow-x-hidden bg-ink text-paper max-md:min-h-0 md:overflow-hidden"
     >
       <motion.div
         className="pointer-events-none absolute h-[70vmax] w-[70vmax] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-[120px]"
@@ -76,12 +76,9 @@ function Hero() {
         ))}
       </div>
 
-      <motion.div
-        style={{ y, opacity, scale }}
-        className="relative mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-center px-6 pb-8 pt-24 md:px-10 md:pb-10"
-      >
-        <div className="grid items-center gap-6 md:grid-cols-12 md:gap-10">
-          <div className="md:col-span-7">
+      <div className="relative mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-start px-6 pb-16 pt-24 md:justify-center md:px-10 md:pb-10">
+        <div className="grid items-start gap-10 md:grid-cols-12 md:items-center md:gap-10">
+          <motion.div style={{ y, opacity, scale }} className="md:col-span-7">
             <motion.p
               className="label mb-6 flex items-center gap-3 text-paper/60"
               initial={{ opacity: 0, x: -20 }}
@@ -91,16 +88,16 @@ function Hero() {
               <span className="h-px w-10 bg-garnet-bright" />
               Gamecock Consulting Club
             </motion.p>
-            <h1 className="font-serif text-[12vw] leading-[0.92] tracking-[-0.02em] md:text-[min(6.6vw,11vh)]">
+            <h1 className="font-serif text-[clamp(2.4rem,11vw,6.5rem)] leading-[0.92] tracking-[-0.02em] md:text-[min(6.6vw,11vh)]">
               {headline.map((line, i) => (
-                <span key={line.lead} className="block whitespace-nowrap">
+                <span key={line.lead} className="block sm:whitespace-nowrap">
                   <SplitText text={line.lead} delay={0.8 + i * 0.15} />{' '}
                   <SplitText text={line.accent} delay={0.9 + i * 0.15} className="italic text-garnet-bright" />
                 </span>
               ))}
             </h1>
             <motion.p
-              className="mt-6 max-w-lg text-lg leading-relaxed text-paper/70"
+              className="mt-6 max-w-lg text-base leading-relaxed text-paper/70 sm:text-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 1.4, ease: easeOut }}
@@ -108,13 +105,13 @@ function Hero() {
               University of South Carolina students doing real strategy work for real clients, winning on the
               international case circuit, and landing at the world&rsquo;s top firms.
             </motion.p>
-          </div>
+          </motion.div>
 
-          <div className="mt-6 md:col-span-5 md:col-start-8 md:mt-0">
+          <div className="md:col-span-5 md:col-start-8">
             <ProofTiles />
           </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   )
 }
@@ -141,7 +138,7 @@ function ProofTiles() {
       to: '/case-competitions',
       label: 'Case competitions',
       stat: (
-        <span className="font-serif text-4xl leading-[1.05]">
+        <span className="font-serif text-[1.65rem] leading-[1.05] sm:text-3xl md:text-4xl">
           Consistent <span className="italic text-garnet-bright">international wins</span>
         </span>
       ),
@@ -151,11 +148,11 @@ function ProofTiles() {
       to: '/member-development',
       label: 'Placements',
       stat: (
-        <span className="flex flex-col gap-4">
-          <span className="font-serif text-4xl leading-[1.05]">
+        <span className="flex flex-col gap-3 sm:gap-4">
+          <span className="font-serif text-[1.65rem] leading-[1.05] sm:text-3xl md:text-4xl">
             Continuous <span className="italic text-garnet-bright">MBB placements</span>
           </span>
-          <span className="flex items-center gap-5 [--logo-scale:0.5]">
+          <span className="flex flex-wrap items-center gap-4 sm:gap-5 [--logo-scale:0.45] sm:[--logo-scale:0.5]">
             <LogoMark logo={logos.mckinsey} />
             <LogoMark logo={logos.bain} />
             <LogoMark logo={logos.bcg} />
@@ -178,7 +175,7 @@ function ProofTiles() {
           <TransitionLink
             to={t.to}
             label={t.label}
-            className="group relative flex flex-col gap-3 overflow-hidden border-b border-white/10 py-5 md:py-5"
+            className="group relative flex flex-col gap-2.5 overflow-hidden border-b border-white/10 py-4 sm:gap-3 sm:py-5"
           >
             <span className="absolute inset-0 origin-left scale-x-0 bg-white/[0.04] transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-x-100" />
             <span className="absolute bottom-[-1px] left-0 h-px w-full origin-left scale-x-0 bg-garnet-bright transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-x-100" />
@@ -188,7 +185,7 @@ function ProofTiles() {
                 →
               </span>
             </span>
-            <span className="relative flex min-h-12 items-center">{t.stat}</span>
+            <span className="relative flex min-h-10 items-center sm:min-h-12">{t.stat}</span>
             <span className="relative max-w-sm text-sm leading-relaxed text-paper/60">{t.body}</span>
           </TransitionLink>
         </motion.div>
@@ -231,7 +228,7 @@ function Pillars() {
             as="h2"
             inView
             text="Three ways we turn ambitious students into consultants."
-            className="font-serif text-5xl leading-[1] tracking-tight md:col-span-9 md:text-7xl"
+            className="font-serif text-4xl leading-[1] tracking-tight sm:text-5xl md:col-span-9 md:text-7xl"
             stagger={0.04}
           />
         </div>

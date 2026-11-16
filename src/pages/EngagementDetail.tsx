@@ -110,10 +110,10 @@ function Hero({ e }: { e: Engagement }) {
         className="pointer-events-none absolute -right-[20vw] top-[-20vh] h-[90vmax] w-[90vmax] rounded-full opacity-30 blur-[140px]"
         style={{ background: `radial-gradient(circle, ${e.accent}, transparent 60%)` }}
       />
-      <div className="relative mx-auto grid min-h-[100svh] max-w-[1600px] items-end gap-10 px-6 pb-16 pt-16 md:grid-cols-12 md:px-10 md:pt-20">
+      <div className="relative mx-auto grid min-h-[100svh] max-w-[1600px] items-end gap-8 px-6 pb-12 pt-28 md:grid-cols-12 md:gap-10 md:px-10 md:pb-16 md:pt-20">
         <motion.div style={{ y: textY }} className="md:col-span-7">
           <motion.p
-            className="label mb-10 text-paper/50"
+            className="label mb-6 text-paper/50 md:mb-10"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.9, duration: 1, ease: easeOut }}
@@ -123,10 +123,10 @@ function Hero({ e }: { e: Engagement }) {
             <span style={{ color: e.accent }}>{e.index}</span>
           </motion.p>
 
-          <h1 className="font-serif text-[16vw] leading-[0.85] tracking-[-0.03em] md:text-[10vw]">
+          <h1 className="font-serif text-[clamp(3.5rem,16vw,10rem)] leading-[0.85] tracking-[-0.03em] md:text-[10vw]">
             <SplitText text={e.clientShort} delay={0.75} />
           </h1>
-          <h2 className="mt-8 max-w-2xl text-2xl leading-snug text-paper/85 md:text-3xl">
+          <h2 className="mt-6 max-w-2xl text-xl leading-snug text-paper/85 sm:text-2xl md:mt-8 md:text-3xl">
             <SplitText text={e.title} delay={1} stagger={0.03} />
           </h2>
 

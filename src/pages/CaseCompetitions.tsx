@@ -193,6 +193,13 @@ function GlobeTour() {
               </li>
             ))}
           </ol>
+          <p className="label mt-4 text-paper/55 md:hidden">
+            <span className="text-garnet-bright">{String(step).padStart(2, '0')}</span>
+            {' / '}
+            {String(n - 1).padStart(2, '0')}
+            {' · '}
+            {step === 0 ? home.name : international[step - 1]?.city}
+          </p>
         </div>
       </div>
     </section>

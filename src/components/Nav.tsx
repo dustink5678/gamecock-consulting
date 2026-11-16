@@ -4,13 +4,15 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { engagements } from '../data/engagements'
 import { TransitionLink } from '../lib/transition'
-import { easeInOut, easeOut } from '../lib/motion'
+import { easeOut } from '../lib/motion'
 
 export const navLinks = [
   { to: '/engagements', label: 'Engagements' },
   { to: '/case-competitions', label: 'Case Competitions' },
   { to: '/member-development', label: 'Member Development' },
 ]
+
+const contactHref = 'mailto:gamecockconsulting@gmail.com'
 
 export default function Nav() {
   const { scrollY } = useScroll()
@@ -28,7 +30,19 @@ export default function Nav() {
 
   useEffect(() => setOpen(false), [location.pathname])
 
+  useEffect(() => {
+    if (!open) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    lenis?.stop()
+    return () => {
+      document.body.style.overflow = prev
+      lenis?.start()
+    }
+  }, [open, lenis])
+
   const selectEngagement = (slug: string) => {
+    setOpen(false)
     if (activeSlug === slug) return
     navigate(`/engagements/${slug}`)
     lenis?.scrollTo(0, { immediate: true, force: true })
@@ -43,31 +57,38 @@ export default function Nav() {
           scrolled && !open ? 'opacity-100' : 'opacity-0'
         }`}
       />
-      <header className="fixed inset-x-0 top-0 z-50 text-paper mix-blend-difference">
+      <header
+        className={`fixed inset-x-0 top-0 z-[60] text-paper ${open ? '' : 'mix-blend-difference'}`}
+      >
         <div
-          className={`mx-auto flex max-w-[1600px] items-center justify-between px-6 transition-[padding] duration-500 ease-out md:px-10 ${
-            scrolled ? 'py-3' : 'py-5'
+          className={`mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-6 transition-[padding] duration-500 ease-out md:px-10 ${
+            scrolled || open ? 'py-3' : 'py-5'
           }`}
         >
-          <TransitionLink to="/" label="Gamecock Consulting" className="group flex items-center gap-3">
-            <span className="grid h-8 w-8 place-items-center rounded-[6px] border border-current font-serif text-lg italic transition-transform duration-500 group-hover:rotate-[-8deg]">
+          <TransitionLink
+            to="/"
+            label="Gamecock Consulting"
+            className="group flex min-w-0 items-center gap-3"
+            onClick={() => setOpen(false)}
+          >
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-[6px] border border-current font-serif text-lg italic transition-transform duration-500 group-hover:rotate-[-8deg]">
               G
             </span>
-            <span className="text-sm font-medium tracking-tight">
+            <span className="truncate text-sm font-medium tracking-tight">
               Gamecock <span className="font-serif text-base italic">Consulting</span>
             </span>
           </TransitionLink>
 
-          <nav className="hidden items-center gap-7 md:flex lg:gap-9 xl:gap-10">
+          <nav className="hidden items-center gap-7 lg:flex xl:gap-10">
             {navLinks.map((l) => {
               const active = location.pathname.startsWith(l.to)
               const isEngagementsLink = l.to === '/engagements'
               return (
-                <div key={l.to} className="flex items-center gap-4 lg:gap-5">
+                <div key={l.to} className="flex items-center gap-4 xl:gap-5">
                   <TransitionLink
                     to={l.to}
                     label={l.label}
-                    className="group relative font-serif text-sm leading-none tracking-tight lg:text-base xl:text-lg"
+                    className="group relative font-serif text-sm leading-none tracking-tight xl:text-lg"
                   >
                     {l.label}
                     <span
@@ -78,7 +99,7 @@ export default function Nav() {
                   </TransitionLink>
                   {isEngagementsLink && (
                     <div
-                      className={`items-center gap-3 border-l border-current/25 pl-4 lg:gap-4 lg:pl-5 ${
+                      className={`items-center gap-3 border-l border-current/25 pl-4 xl:gap-4 xl:pl-5 ${
                         onEngagements ? 'flex' : 'hidden xl:flex'
                       }`}
                     >
@@ -94,7 +115,7 @@ export default function Nav() {
                             aria-current={isActive ? 'page' : undefined}
                           >
                             <span
-                              className={`font-serif text-sm leading-none tracking-tight transition-opacity duration-300 lg:text-base xl:text-lg ${
+                              className={`font-serif text-sm leading-none tracking-tight transition-opacity duration-300 xl:text-lg ${
                                 isActive ? 'opacity-100' : 'opacity-40 group-hover:opacity-75'
                               }`}
                             >
@@ -114,18 +135,20 @@ export default function Nav() {
               )
             })}
             <a
-              href="mailto:gamecockconsulting@gmail.com"
-              className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-full border border-current px-5 font-serif text-sm leading-none tracking-tight transition-colors hover:bg-paper hover:text-ink lg:h-10 lg:px-6 lg:text-base xl:h-11 xl:text-lg"
+              href={contactHref}
+              className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-full border border-current px-5 font-serif text-sm leading-none tracking-tight transition-colors hover:bg-paper hover:text-ink xl:h-11 xl:px-6 xl:text-lg"
             >
               Partner with us
             </a>
           </nav>
 
           <button
-            className="label relative z-[60] md:hidden"
+            type="button"
+            className="relative z-[70] ml-auto shrink-0 rounded-full border border-current px-4 py-2 font-serif text-sm leading-none tracking-tight lg:hidden"
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
-            aria-label="Toggle menu"
+            aria-controls="site-menu"
+            aria-label={open ? 'Close menu' : 'Open menu'}
           >
             {open ? 'Close' : 'Menu'}
           </button>
@@ -135,48 +158,104 @@ export default function Nav() {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-40 flex flex-col justify-end bg-garnet px-6 pb-16 text-paper md:hidden"
-            initial={{ clipPath: 'inset(0 0 100% 0)' }}
-            animate={{ clipPath: 'inset(0 0 0% 0)' }}
-            exit={{ clipPath: 'inset(0 0 100% 0)' }}
-            transition={{ duration: 0.7, ease: easeInOut }}
+            id="site-menu"
+            className="fixed inset-0 z-50 flex flex-col bg-ink text-paper lg:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, ease: easeOut }}
           >
-            {[{ to: '/', label: 'Home' }, ...navLinks].map((l, i) => (
-              <div key={l.to} className="overflow-hidden">
+            <div className="flex min-h-0 flex-1 flex-col px-6 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-24">
+              <nav className="flex min-h-0 flex-1 flex-col justify-center gap-1 overflow-y-auto py-4">
                 <motion.div
-                  initial={{ y: '100%' }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.25 + i * 0.07, ease: easeOut }}
+                  initial={{ y: 28, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.55, delay: 0.05, ease: easeOut }}
                 >
-                  <TransitionLink to={l.to} label={l.label} className="block py-1 font-serif text-5xl">
-                    {l.label}
+                  <TransitionLink
+                    to="/"
+                    label="Home"
+                    className="block py-2 font-serif text-[clamp(2rem,9vw,3.25rem)] leading-none tracking-tight"
+                    onClick={() => setOpen(false)}
+                  >
+                    Home
                   </TransitionLink>
                 </motion.div>
-              </div>
-            ))}
-            {onEngagements && (
-              <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 border-t border-paper/20 pt-6">
-                {engagements.map((eng) => {
-                  const isActive = eng.slug === activeSlug
-                  return (
-                    <button
-                      key={eng.slug}
-                      type="button"
-                      onClick={() => {
-                        setOpen(false)
-                        selectEngagement(eng.slug)
-                      }}
-                      className={`font-serif text-2xl ${isActive ? 'text-paper' : 'text-paper/50'}`}
+
+                <motion.div
+                  initial={{ y: 28, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.55, delay: 0.12, ease: easeOut }}
+                  className="border-t border-white/10 pt-4"
+                >
+                  <TransitionLink
+                    to="/engagements"
+                    label="Engagements"
+                    className="block py-2 font-serif text-[clamp(2rem,9vw,3.25rem)] leading-none tracking-tight"
+                    onClick={() => setOpen(false)}
+                  >
+                    Engagements
+                  </TransitionLink>
+                  <div className="mt-3 mb-2 flex flex-col gap-1 border-l border-white/20 pl-5">
+                    {engagements.map((eng) => {
+                      const isActive = eng.slug === activeSlug
+                      return (
+                        <button
+                          key={eng.slug}
+                          type="button"
+                          onClick={() => selectEngagement(eng.slug)}
+                          className={`py-1.5 text-left font-serif text-[clamp(1.35rem,6vw,2rem)] leading-none tracking-tight transition-opacity ${
+                            isActive ? 'opacity-100' : 'opacity-50'
+                          }`}
+                          aria-current={isActive ? 'page' : undefined}
+                        >
+                          {eng.clientShort}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </motion.div>
+
+                {navLinks
+                  .filter((l) => l.to !== '/engagements')
+                  .map((l, i) => (
+                    <motion.div
+                      key={l.to}
+                      initial={{ y: 28, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ duration: 0.55, delay: 0.2 + i * 0.07, ease: easeOut }}
+                      className="border-t border-white/10"
                     >
-                      {eng.clientShort}
-                    </button>
-                  )
-                })}
-              </div>
-            )}
-            <a href="mailto:gamecockconsulting@gmail.com" className="label mt-10 opacity-70">
-              gamecockconsulting@gmail.com
-            </a>
+                      <TransitionLink
+                        to={l.to}
+                        label={l.label}
+                        className="block py-3 font-serif text-[clamp(2rem,9vw,3.25rem)] leading-none tracking-tight"
+                        onClick={() => setOpen(false)}
+                      >
+                        {l.label}
+                      </TransitionLink>
+                    </motion.div>
+                  ))}
+              </nav>
+
+              <motion.div
+                className="shrink-0 border-t border-white/10 pt-6"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.55, delay: 0.35, ease: easeOut }}
+              >
+                <a
+                  href={contactHref}
+                  className="inline-flex h-12 w-full items-center justify-center rounded-full border border-current px-6 font-serif text-lg leading-none tracking-tight"
+                  onClick={() => setOpen(false)}
+                >
+                  Contact us
+                </a>
+                <a href={contactHref} className="label mt-4 block text-center text-paper/55">
+                  gamecockconsulting@gmail.com
+                </a>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
